@@ -1,0 +1,48 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/mvc
+                            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--注解扫描-->
+    <context:component-scan base-package="com.cjf.controller"/>
+    <context:component-scan base-package="com.cjf"/>
+
+    <!--注解驱动-->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    <!--    location元素表示webapp目录下**包下的所有元素，mapping元素表示以/static开头的所有请求路径-->
+    <mvc:resources mapping="/images/**" location="/images/"></mvc:resources>
+    <mvc:resources mapping="/css/**" location="/css/"></mvc:resources>
+    <mvc:resources mapping="/js/**" location="/js/"></mvc:resources>
+
+    <!--视图解析器-->
+    <bean id ="jspviewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+        <!--前缀-->
+        <property name="prefix" value="/WEB-INF/view/"></property>
+        <!--后缀-->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+<!--    配置json转换-->
+    <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+<!--    配置拦截器-->
+<mvc:interceptors>
+    <bean class="com.cjf.utils.HttpInterceptor"></bean>
+
+<!--    token的拦截器-->
+    <mvc:interceptor>
+        <mvc:mapping path="/**"/>
+        <mvc:exclude-mapping path="/login"/>
+        <mvc:exclude-mapping path="/register"/>
+        <mvc:exclude-mapping path="/changePass"/>
+        <bean class="com.cjf.utils.HeaderTokenInterceptor"></bean>
+    </mvc:interceptor>
+
+</mvc:interceptors>
+
+</beans>

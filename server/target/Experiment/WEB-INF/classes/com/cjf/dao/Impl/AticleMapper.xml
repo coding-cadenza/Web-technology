@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定对应得Dao接口-->
+<mapper namespace="com.cjf.dao.ArticleMapper">
+    <!--    模糊查询-->
+    <select id="getArticleList" resultType="ArticleT">
+        select *
+        from articlet
+        where title like concat('%', #{searchValue}, '%')
+          and authorId = #{authorId} limit #{skip}
+            , #{limit}
+    </select>
+
+    <!--    用户计数-->
+    <select id="getArticleCount" resultType="java.lang.Integer">
+        select count(*)
+        from articlet
+        where title like concat('%', #{searchValue}, '%')
+          and authorId = #{authorId}
+    </select>
+
+    <delete id="deleteArticleById">
+        delete
+        from articlet
+        where articleId =
+              #{articleId}
+    </delete>
+
+    <!--    更新文章信息-->
+
+    <!--    更新文章信息-->
+    <update id="updateArticle" parameterType="ArticleT">
+        update articlet
+        set title   = #{title},
+            content = #{content}
+            where articleId = #{articleId}
+    </update>
+
+    <!--    新增文章-->
+    <insert id="addArticle" parameterType="ArticleT">
+        insert into articlet(articleId, authorId, title, content)
+        values (#{articleId}, #{authorId}, #{title}, #{content})
+    </insert>
+
+<!--    根据用户删除文章-->
+    <delete id="deleteArticleByAuthor">
+        delete
+        from articlet
+        where authorId =
+              #{authorId}
+    </delete>
+</mapper>

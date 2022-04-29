@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定对应得Dao接口-->
+<mapper namespace="com.cjf.dao.UserMapper">
+    <!--    模糊查询-->
+    <select id="getUserList" resultType="UserT">
+        select *
+        from usert
+        where username like concat('%', #{searchValue}, '%')
+            limit #{skip}
+            , #{limit}
+    </select>
+    <!--    用户计数-->
+    <select id="getUserCount" resultType="java.lang.Integer">
+        select count(*)
+        from usert
+        where username like concat('%', #{searchValue}, '%')
+    </select>
+    <!--    增加用户-->
+    <insert id="addUser" parameterType="UserT">
+        insert into usert (username, password, email, birthday, balance,articleNum)
+        values (#{username}, #{password}, #{email}, #{birthday}, #{balance}, #{articleNum})
+    </insert>
+    <!--    根据ID找用户信息-->
+    <select id="getUserById" resultType="UserT" parameterType="int">
+        select *
+        from usert
+        where id = #{id}
+    </select>
+    <!--    用户登录映射-->
+    <select id="login" resultType="UserT" parameterType="UserT">
+        select *
+        from usert
+        where username = #{username}
+          and password = #{password}
+    </select>
+    <!--    更新用户信息-->
+    <update id="updateUser" parameterType="UserT">
+        update usert
+        set username   = #{username},
+            password   = #{password},
+            email      = #{email},
+            birthday   = #{birthday},
+            balance    = #{balance},
+            articleNum = #{articleNum}
+            where id = #{id}
+    </update>
+    <!--    删除用户信息-->
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        delete
+        from usert
+        where id = #{id}
+    </delete>
+    <!--    根据名称获取用户-->
+    <select id="getUserByName" parameterType="UserT" resultType="UserT">
+        select *
+        from usert
+        where username = #{username}
+    </select>
+    <!--    根据邮箱获取用户-->
+    <select id="getUserByEmail" parameterType="UserT" resultType="UserT">
+        select *
+        from usert
+        where email = #{email}
+    </select>
+    <!--    获取每个用户的文章数量-->
+    <select id="getArticleOverview" resultType="map">
+        select id, username, articleNum
+        from usert limit #{skip}
+            , #{limit}
+    </select>
+    <!--    增加一篇文章-->
+    <update id="addArticle">
+        update usert
+        set articleNum = articleNum + 1
+        where id = #{authorId}
+    </update>
+
+    <!--    增加一篇文章-->
+    <update id="deleteArticle">
+        update usert
+        set articleNum = articleNum - 1
+        where id = #{authorId}
+    </update>
+
+</mapper>
